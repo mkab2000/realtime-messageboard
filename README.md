@@ -32,12 +32,13 @@ Mobile UI
 
 ### Links
 
-- Live Site URL: [Vercel](https://glassdit.vercel.app)
+- Live Site URL: [Vercel](https://realtime-messageboard.vercel.app)
 
 ### Built with
 
 - React
-- CSS
+- React Query
+- Typescript
 
 
 ## Author
