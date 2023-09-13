@@ -33,7 +33,6 @@ export function useUpdateSinglePostQuery(_id: string) {
   const queryClient = useQueryClient();
 
   const updatePostQueryData = (newData: iPost) => {
-    // Use the query key (in this case, [_id]) to identify and update the query data
     queryClient.setQueryData(['singlePost', _id], newData);
   };
 

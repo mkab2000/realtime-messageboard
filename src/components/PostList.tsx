@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useEffect } from 'react';
 import { useGetAllPostQuery, useUpdateAllPostQuery } from '../hooks/postsQuery';
 import Post from './Post';

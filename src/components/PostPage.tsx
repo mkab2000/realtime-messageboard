@@ -1,18 +1,17 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { useState } from 'react';
 import Post from './Post';
 import { useGetSinglePostQuery, useUpdateSinglePostQuery } from '../hooks/postsQuery';
 import useWebsocketData from '../hooks/useWebsocketData';
 import { styled } from 'styled-components';
 import { iComment } from '../interfaces';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 const PostPage = () => {
 
-  const currentUrl = window.location.href;
-  const _id = currentUrl.split('/').slice(-1)[0];
-  const [commentText, setCommentText] = useState('');
-  const [displayCommentError, setDisplayCommentError] = useState(false);
+  const _id = window.location.href.split('/')[window.location.href.split('/').length-1];
     
   const { data: queryData, isLoading, error } = useGetSinglePostQuery(_id);
   const updatePostQueryData = useUpdateSinglePostQuery(_id);
@@ -25,18 +24,23 @@ const PostPage = () => {
     
   }}, [websocketData]);
 
-  async function submitComment(_id: string, commentText: string) {
-    if(!(commentText.length === 0)) {
-      await fetch(
-        'https://realtime-rebbit-backend.vercel.app/api/posts/' + _id + '/comments',
-        {
-          method: 'POST', 
-          body: JSON.stringify({text: commentText}),
-          headers: {
-            'Content-Type': 'application/json',
-          }, 
-        });
-    }
+  const schema = yup.object().shape({
+    text: yup.string().required('Comment text is required'),
+  });
+
+  const { handleSubmit, control, formState: {errors} } = useForm({resolver: yupResolver(schema)})
+
+  const onSubmit = async (formData: {text: string}) => {
+    const { text } = formData;
+    await fetch(
+      'https://realtime-rebbit-backend.vercel.app/api/posts/' + _id + '/comments',
+      {
+        method: 'POST', 
+        body: JSON.stringify({text: text}),
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+      });
   }
 
   if(isLoading) return (
@@ -60,23 +64,23 @@ const PostPage = () => {
         />}
 
       <div className="createComments">
-        <textarea 
-          value={commentText} 
-          onChange={(e) => setCommentText(e.target.value)} 
-        />
-        
-        {displayCommentError && (
-          <p className="error-text">Field is necessary</p>
-        )}
-
-        <button 
-          type='button' 
-          onClick={() => {
-            (commentText.length === 0) ? setDisplayCommentError(true) : setDisplayCommentError(false);
-            submitComment(_id, commentText);
-        }}>
-          Submit
-        </button>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="text"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <>
+                <textarea {...field} />
+                {errors.text && (
+                  <p className="error-text">{errors.text.message}</p>
+                )}
+              </>
+            )}
+          />
+          
+          <button type='submit'>Submit</button>
+        </form>
       </div>
 
       <div>

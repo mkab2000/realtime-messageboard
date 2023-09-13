@@ -19,7 +19,7 @@ const App = () => {
     <>
       <GlobalStyle />
       <Root />
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </>
       
   );

@@ -1,4 +1,4 @@
-// import logo from '../logo.png';
+import logo from '../logo.png';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -7,7 +7,7 @@ function Nav() {
   return (
     <StyledNav>
       <div>
-        {/* <img src={logo} alt="LOGO" /> */}
+        <img src={logo} alt="LOGO" />
         <h1>Realtime Glassdit</h1>
       </div>
 
